@@ -1,12 +1,5 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Planning Poker</title>
-        <link rel="stylesheet" href="{% static "css/app.css" %}">
-    </head>
-    <body>
-        <h1>Planning Poker</h1>
-        <input id="poker-session-create" type="button" value="Enter"/>
-    </body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+<input id="poker-session-create" type="button" value="Enter"/>
+{% endblock content %}

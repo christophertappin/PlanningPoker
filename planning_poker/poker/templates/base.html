@@ -1,0 +1,16 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Planning Poker</title>
+        <link rel="stylesheet" href="{% static "css/app.css" %}">
+    </head>
+    <body>
+        <div class="title">
+            <h1>Planning Poker</h1>
+        </div>
+        <div class="body">
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>
