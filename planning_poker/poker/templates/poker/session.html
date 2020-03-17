@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>***TEMP*** poker session</h2>
+<textarea id="poker-values" cols="100" rows="8"></textarea><br/>
+<input id="poker-vote-value" type="text" size="100"/><br/>
+<input id="poker-vote-submit" type="button" value="Submit"/>
+
+<script>
+    var id = "{{ id|escapejs }}";
+    var votes = {0: 0, .5: 0, 1: 0, 2: 0, 3: 0, 5: 0, 8: 0, 13: 0};
+
+    var sessionSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/session/' + id + '/'
+    );
+
+    sessionSocket.onmessage = function(event) {
+        var data = JSON.parse(event.data);
+        var message = data['vote'];
+
+        votes[message] += 1
+
+        document.querySelector('#poker-values').value = ''
+
+        for (let key in votes) {
+            if (votes[key] > 0) {
+                document.querySelector('#poker-values').value += (key + ' - ' + votes[key] + '\n')
+            }
+            
+        }
+    }
+
+    sessionSocket.onclose = function(event) {
+        console.error('Session socket closed unexpectedly');
+    }
+
+    document.querySelector('#poker-vote-value').focus()
+    document.querySelector('#poker-vote-value').onkeyup = function(event) {
+        if (event.keyCode === 13) {
+            document.querySelector('#poker-vote-submit').click();
+        }
+    }
+
+    document.querySelector('#poker-vote-submit').onclick = function(event) {
+        var voteInputDom = document.querySelector('#poker-vote-value');
+        var vote = voteInputDom.value;
+        sessionSocket.send(JSON.stringify({
+            'vote': vote
+        }));
+
+        voteInputDom.value = '';
+    }
+
+    
+</script>
+{% endblock content %}

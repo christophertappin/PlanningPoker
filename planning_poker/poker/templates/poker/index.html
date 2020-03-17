@@ -2,4 +2,9 @@
 
 {% block content %}
 <input id="poker-session-create" type="button" value="Enter"/>
+<script>
+    document.querySelector('#poker-session-create').onclick = function(event) {
+        window.location.pathname = '/createsession/';
+    }
+</script>
 {% endblock content %}
