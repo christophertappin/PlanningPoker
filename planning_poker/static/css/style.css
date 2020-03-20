@@ -1,0 +1,67 @@
+#voting {
+    /* background-color: darkgrey; */
+    border: 2px solid darkgrey;
+    /* height: 250px; */
+    border-radius: 1em;
+    margin: 1em;
+    padding: 1em;
+    content: float;
+    overflow: hidden;
+}
+.card {
+    border-radius: 25px;
+    /* background: yellow; */
+    border: 2px solid yellowgreen;
+    /* padding: 40px; */
+    height: 250px;
+    width: 200px;
+    float: left;
+    overflow: auto;
+    margin: 40px;
+    text-align: center;
+    font-size: 7em;
+    vertical-align: middle;
+    line-height: 250px;
+    overflow-y: hidden;
+    /* top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); */
+}
+
+.selected {
+    background: yellowgreen;
+}
+
+.vote {
+    animation: slide-up 1s ease;
+    float: left;
+}
+
+.vote p {
+    display: block;
+    text-align: center;
+}
+
+
+
+@keyframes slide-up {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-down {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

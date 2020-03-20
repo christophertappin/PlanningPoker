@@ -1,14 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>***TEMP*** poker session</h2>
-<textarea id="poker-values" cols="100" rows="8"></textarea><br/>
-<input id="poker-vote-value" type="text" size="100"/><br/>
-<input id="poker-vote-submit" type="button" value="Submit"/>
+<div id="voting"><h2>Votes:</h2></div>
+
+{% for option in options %}
+<div class="card" data-value="{{option}}" onclick="cardClick(this)">{{option}}</div>
+{% endfor %}
 
 <script>
     var id = "{{ id|escapejs }}";
-    var votes = {0: 0, .5: 0, 1: 0, 2: 0, 3: 0, 5: 0, 8: 0, 13: 0};
+    // var options = "{{ options|escapejs }}";
+    var votes = {};
+
+    
 
     var sessionSocket = new WebSocket(
         'ws://' + window.location.host +
@@ -17,17 +21,18 @@
 
     sessionSocket.onmessage = function(event) {
         var data = JSON.parse(event.data);
-        var message = data['vote'];
+        votes = data['votes'];
 
-        votes[message] += 1
+        var votesDiv = document.getElementById('voting');
 
-        document.querySelector('#poker-values').value = ''
+        var voteDivs = votesDiv.querySelectorAll('.vote')
+        for (var i = 0; i < voteDivs.length; i++) {
+            votesDiv.removeChild(voteDivs[i])
+        }
 
-        for (let key in votes) {
-            if (votes[key] > 0) {
-                document.querySelector('#poker-values').value += (key + ' - ' + votes[key] + '\n')
-            }
-            
+        for (let vote in votes) {
+            var voteDiv = createVoteDiv(vote)
+            votesDiv.appendChild(voteDiv)
         }
     }
 
@@ -35,23 +40,34 @@
         console.error('Session socket closed unexpectedly');
     }
 
-    document.querySelector('#poker-vote-value').focus()
-    document.querySelector('#poker-vote-value').onkeyup = function(event) {
-        if (event.keyCode === 13) {
-            document.querySelector('#poker-vote-submit').click();
+    function cardClick(card) {
+        var selectedCards = document.getElementsByClassName('selected');
+        for (let selectedCard of selectedCards) {
+            selectedCard.classList.remove('selected')
         }
-    }
-
-    document.querySelector('#poker-vote-submit').onclick = function(event) {
-        var voteInputDom = document.querySelector('#poker-vote-value');
-        var vote = voteInputDom.value;
+        card.classList.add('selected');
         sessionSocket.send(JSON.stringify({
-            'vote': vote
+            'vote': card.dataset.value
         }));
-
-        voteInputDom.value = '';
     }
 
+    function createVoteDiv(vote) {
+        voteDiv = document.createElement('div');
+        voteDiv.classList.add('vote')
+        voteDiv.dataset.value = vote;
+
+        card = document.createElement('div');
+        card.classList.add('card');
+        
+        card.textContent = vote
+
+        voteDiv.appendChild(card);
+        var numVotes = document.createElement('p')
+        numVotes.textContent = 'Votes: ' + votes[vote]
+        voteDiv.appendChild(numVotes)
+        
+        return voteDiv;
+    }
     
 </script>
 {% endblock content %}

@@ -126,6 +126,7 @@ STATICFILES_DIRS = (
 )
 
 ASGI_APPLICATION = 'planning_poker.routing.application'
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
