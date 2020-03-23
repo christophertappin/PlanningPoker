@@ -9,7 +9,4 @@ application = ProtocolTypeRouter({
             poker.routing.websocket_urlpatterns
         )
     ),
-    # 'channel': ChannelNameRouter(
-    #     poker.routing.channel_consumer
-    # ),
 })

@@ -2,7 +2,6 @@ import pytest
 import json
 from channels.testing import WebsocketCommunicator
 from channels.routing import URLRouter
-from django.urls import path
 from django.conf.urls import url
 from poker.consumers import PokerConsumer
 
@@ -35,7 +34,7 @@ class TestPokerConsumer:
     @pytest.mark.asyncio
     async def test_consumer_send(self, communicator):
         # Wait for initial state to be send
-        response = await communicator.receive_from()
+        await communicator.receive_from()
 
         await communicator.send_json_to({ "vote": "1" })
         response = await communicator.receive_from()

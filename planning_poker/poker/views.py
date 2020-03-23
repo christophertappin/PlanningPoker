@@ -4,9 +4,10 @@ import uuid
 
 options = [0, .5, 1, 2, 3, 5, 8, 13]
 
-# Create your views here.
+
 def index(request):
     return render(request, 'poker/index.html', {})
+
 
 def create_session(request):
     # Create UUID
@@ -14,6 +15,7 @@ def create_session(request):
     # Redirect
     response = redirect('/' + uuid_string + '/')
     return response
+
 
 def session(request, id):
     return render(request, 'poker/session.html', {

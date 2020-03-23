@@ -1,11 +1,11 @@
 from channels.db import database_sync_to_async
-from channels.consumer import SyncConsumer
 from channels.generic.websocket import AsyncWebsocketConsumer
 from collections import defaultdict
 from .models import Vote
 
 import json
 import sys
+
 
 class PokerConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -24,10 +24,9 @@ class PokerConsumer(AsyncWebsocketConsumer):
         # Send the current votes
         votes = await self._get_votes()
         await self.send(text_data=json.dumps({
-                'type': 'votes',
-                'votes': votes
-            }))
-        
+            'type': 'votes',
+            'votes': votes
+        }))
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
@@ -39,9 +38,9 @@ class PokerConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         vote = text_data_json['vote']
         await self._save_vote(vote)
-        await self.sendCurrentState()
-    
-    async def sendCurrentState(self):
+        await self.send_current_state()
+
+    async def send_current_state(self):
         votes = await self._get_votes()
         await self.channel_layer.group_send(
             self.session_group_id,
@@ -70,15 +69,14 @@ class PokerConsumer(AsyncWebsocketConsumer):
             sys.exit("There shouldn't ever be more than one vote per client, per session!")
         else:
             vote_object.value = vote
-        
+
         vote_object.save()
 
     @database_sync_to_async
     def _get_votes(self):
         votes = Vote.objects.filter(session_id=self.session_id)
         votes_dict = {}
-        votes_dict = defaultdict(lambda:0, votes_dict)
+        votes_dict = defaultdict(lambda: 0, votes_dict)
         for vote in votes:
             votes_dict[str(vote.value).rstrip('.0')] += 1
         return {key: value for key, value in sorted(votes_dict.items(), key=lambda item: item[1], reverse=True)}
-
