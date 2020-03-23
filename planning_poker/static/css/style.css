@@ -1,13 +1,20 @@
-#voting {
-    /* background-color: darkgrey; */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Helvetica;
+    font-weight: normal;
+    line-height: 1.5;
+}
+
+.bordered {
     border: 2px solid darkgrey;
-    /* height: 250px; */
     border-radius: 1em;
     margin: 1em;
     padding: 1em;
     content: float;
     overflow: hidden;
 }
+
 .card {
     border-radius: 25px;
     /* background: yellow; */
