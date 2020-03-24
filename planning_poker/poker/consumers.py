@@ -4,6 +4,7 @@ from collections import defaultdict
 from .models import Vote
 
 import json
+import re
 import sys
 
 
@@ -78,5 +79,8 @@ class PokerConsumer(AsyncWebsocketConsumer):
         votes_dict = {}
         votes_dict = defaultdict(lambda: 0, votes_dict)
         for vote in votes:
-            votes_dict[str(vote.value).rstrip('.0')] += 1
+            value = str(vote.value)
+            # Remove trailing .0
+            value = re.sub(r"\.0$", "", value)
+            votes_dict[value] += 1
         return {key: value for key, value in sorted(votes_dict.items(), key=lambda item: item[1], reverse=True)}
