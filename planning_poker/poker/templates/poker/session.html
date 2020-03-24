@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<p id="url">Share this link with your teammates to join this session: </p>
 <div class="bordered" id="voting"><h2>Votes:</h2></div>
 
 {% for option in options %}
@@ -12,7 +13,7 @@
     // var options = "{{ options|escapejs }}";
     var votes = {};
 
-    
+    addLink()
 
     var sessionSocket = new WebSocket(
         'ws://' + window.location.host +
@@ -67,6 +68,15 @@
         voteDiv.appendChild(numVotes)
         
         return voteDiv;
+    }
+
+    function addLink() {
+        var url = window.location.href
+        var urlLink = document.createElement('a')
+        urlLink.href = url
+        var link = document.createTextNode(url)
+        urlLink.appendChild(link)
+        document.getElementById('url').appendChild(urlLink);
     }
     
 </script>
