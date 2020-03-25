@@ -10,7 +10,6 @@
 
 <script>
     var id = "{{ id|escapejs }}";
-    // var options = "{{ options|escapejs }}";
     var votes = {};
 
     addLink()
@@ -41,6 +40,11 @@
         console.error('Session socket closed unexpectedly');
     }
 
+    /**
+     * Sends data to the server when a card is clicked.
+     * 
+     * @param   {HTMLDivElement}    card    The card that's been clicked
+     */
     function cardClick(card) {
         var selectedCards = document.getElementsByClassName('selected');
         for (let selectedCard of selectedCards) {
@@ -52,6 +56,12 @@
         }));
     }
 
+    /**
+     * A div representing a vote received from the sever.
+     * 
+     * @param   {Object}            vote    The vote that the div will represent
+     * @return  {HTMLDivElement}            A Div representing a vote
+     */
     function createVoteDiv(vote) {
         voteDiv = document.createElement('div');
         voteDiv.classList.add('vote')
@@ -70,6 +80,9 @@
         return voteDiv;
     }
 
+    /**
+     * Add the current url to the page for others to join session. 
+     */
     function addLink() {
         var url = window.location.href
         var urlLink = document.createElement('a')

@@ -9,7 +9,13 @@ import sys
 
 
 class PokerConsumer(AsyncWebsocketConsumer):
+    '''
+    An Asynchronous websocket consumer for receiving data from and broadcasting updates to clients.
+    '''
+
     async def connect(self):
+        '''Handle a websocket connection.'''
+
         self.session_id = self.scope['url_route']['kwargs']['id']
         client = self.scope['client']
         self.client = '{}:{}'.format(client[0], client[1])
@@ -30,18 +36,24 @@ class PokerConsumer(AsyncWebsocketConsumer):
         }))
 
     async def disconnect(self, close_code):
+        '''Removes a client from the group when they disconnect.'''
+
         await self.channel_layer.group_discard(
             self.session_group_id,
             self.channel_name
         )
 
     async def receive(self, text_data):
+        '''Save data received from the client and broadcast to subscribers.'''
+
         text_data_json = json.loads(text_data)
         vote = text_data_json['vote']
         await self._save_vote(vote)
         await self.send_current_state()
 
     async def send_current_state(self):
+        '''Gets the current votes and broadcasts to subscribers.'''
+
         votes = await self._get_votes()
         await self.channel_layer.group_send(
             self.session_group_id,
@@ -52,6 +64,8 @@ class PokerConsumer(AsyncWebsocketConsumer):
         )
 
     async def votes(self, event):
+        '''Send the votes to subscribers'''
+
         vote = event['votes']
 
         await self.send(text_data=json.dumps({
@@ -60,6 +74,8 @@ class PokerConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def _save_vote(self, vote):
+        '''Saves the vote to the database.'''
+
         try:
             vote_object = Vote.objects.get(session_id=self.session_id, client=self.client)
         except Vote.DoesNotExist:
@@ -75,6 +91,8 @@ class PokerConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def _get_votes(self):
+        '''Get the votes from the database.'''
+        
         votes = Vote.objects.filter(session_id=self.session_id)
         votes_dict = {}
         votes_dict = defaultdict(lambda: 0, votes_dict)
